@@ -1,0 +1,149 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="css/jqueryui/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css">
+	<style>
+		html, body {
+			max-width: 100%;
+			overflow-x: hidden;
+		}
+		
+		.square {
+			float: left;
+			width:200px;
+			height:200px;
+			display:block;
+			border: 1px solid black;
+		}
+		
+		.square-hover
+		{
+			background-color: grey;
+		}
+		
+		.square-set
+		{
+			background-color: green;
+		}
+	
+		.dm-room
+		{
+			width: 100px;
+			height: 100px;
+			background-color: black;
+			display: inline-block;
+			margin-left: 33px;
+			-webkit-animation: room-flyin .5s;
+			animation: room-flyin .5s;
+			color: red;
+		}
+		
+		#room-area
+		{
+			width: 9999px;
+			height: 100px;
+			background-color: red;
+			z-index: 9999;
+			-webkit-box-sizing: initial;
+			box-sizing: initial;
+			padding-top: 10px;
+			padding-bottom: 10px;
+			border-top: 1px solid black;
+			border-bottom: 1px solid black;
+		}
+		
+		#dungeon-area-container
+		{
+			max-height: 470px;
+			overflow: scroll;
+		}
+		
+		#dungeon-area
+		{
+			height: 2000px;
+			width: 2000px;
+		}
+		
+		#room-create
+		{
+			clear: both;
+			display: block;
+		}
+		
+		@-webkit-keyframes room-flyin
+		{
+			from { margin-left: 1000px;}
+			to {margin-left: 30px;}
+		}
+		
+		@keyframes room-flyin
+		{
+			from { margin: 1000px;}
+			to {margin: 33px;}
+		}
+	</style>
+	
+	<script type="text/javascript" src="js/libs/jquery-2.1.1.js"></script>
+	<script type="text/javascript" src="js/libs/jquery-ui.js"></script>
+	<script type="text/javascript" src="js/libs/bootstrap.js"></script>
+	<script>
+			window.currentId = 0;
+	
+			function GetNewId() {
+				currentId++;
+				return currentId;
+			}
+			
+			
+			$( document ).ready( function () {
+			$("#dungeon-area-container").scrollTop(2000).scrollLeft(350);
+			for (var y = 0; y < 10; y++)
+			{
+				for (var x = 0; x < 10; x++)
+				{
+					var square = $("<div class='square'>").droppable(
+						{hoverClass: 'square-hover',
+						drop: function (event, ui)
+							{
+								$(this).addClass('square-set').append(ui.draggable.attr("data-id"));
+								ui.draggable.remove();
+							}
+						}
+					).append(x + ", " + y + " : ");
+					$("#dungeon-area").append(square);
+				}
+			}
+			
+			$(".dm-room").draggable({revert: true, revertDuration: 50});
+			$("#room-create").click(
+				function () {
+					if ($(".dm-room").length >= 10)
+					{
+						return;
+					}
+					var newRoom = $("<div class='dm-room' data-container='body' data-toggle='popover' data-placement='top' data-content='Vivamus sagittis lacus vel augue laoreet rutrum faucibus.'>").draggable({revert: true, revertDuration: 50, delay: 0}).popover().attr('data-id', GetNewId());
+					var deleteButton = $("<i class='glyphicon glyphicon-remove'>").click(
+						function () {
+							$(this).parent().fadeOut(200, function(){ $(this).remove(); }).popover('disable');
+						}
+					)
+					newRoom.append(deleteButton).append(newRoom.attr('data-id'));
+					var domRoom = $("#room-area").append(newRoom);
+				}
+			);
+			});
+	</script>
+	
+</head>
+<body>
+<div style="width: 100%; height: 30px; border: 1px solid black;">
+	<button id="room-create">Add room</button></div>
+	<div id="dungeon-area-container">
+		<div id="dungeon-area">
+	
+		</div>
+	</div>
+<div id="room-area">
+</div>
+</body>
+</html>
