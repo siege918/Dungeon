@@ -82,12 +82,19 @@
 			to {margin: 33px;}
 		}
 	</style>
-	
+	<script type="text/javascript" src="js/tile.js"></script>
+	<script type="text/javascript" src="js/room.js"></script>
+	<script type="text/javascript" src="js/dungeon.js"></script>
 	<script type="text/javascript" src="js/libs/jquery-2.1.1.js"></script>
 	<script type="text/javascript" src="js/libs/jquery-ui.js"></script>
 	<script type="text/javascript" src="js/libs/bootstrap.js"></script>
 	<script>
+			
+	
 			window.currentId = 0;
+			window.DUNGEONSIZE = 10;
+			window.dungeon = new Dungeon(window.DUNGEONSIZE);
+			window.availableRooms = new Array();
 	
 			function GetNewId() {
 				currentId++;
@@ -97,19 +104,33 @@
 			
 			$( document ).ready( function () {
 			$("#dungeon-area-container").scrollTop(2000).scrollLeft(350);
-			for (var y = 0; y < 10; y++)
+			for (var y = 0; y < window.DUNGEONSIZE; y++)
 			{
-				for (var x = 0; x < 10; x++)
+				for (var x = 0; x < window.DUNGEONSIZE; x++)
 				{
 					var square = $("<div class='square'>").droppable(
 						{hoverClass: 'square-hover',
 						drop: function (event, ui)
 							{
-								$(this).addClass('square-set').append(ui.draggable.attr("data-id"));
-								ui.draggable.remove();
+								if (!$(this).hasClass('square-set'))
+								{
+									$(this).addClass('square-set').append(ui.draggable.attr("data-id"));
+									
+									var x = parseInt($(this).attr('data-x'));
+									var y = parseInt($(this).attr('data-y'));
+									
+									var roomId = parseInt(ui.draggable.attr("data-id"));
+									
+									var currentRoom = $.grep(availableRooms, function(e) {return e.id == roomId} )[0];
+									
+									dungeon.Rooms[x][y] = currentRoom;
+									availableRooms.splice(availableRooms.indexOf(currentRoom), 1);
+									
+									ui.draggable.remove();
+								}
 							}
 						}
-					).append(x + ", " + y + " : ");
+					).append(x + ", " + y + " : ").attr('data-x', x).attr('data-y', y);
 					$("#dungeon-area").append(square);
 				}
 			}
@@ -121,13 +142,19 @@
 					{
 						return;
 					}
-					var newRoom = $("<div class='dm-room' data-container='body' data-toggle='popover' data-placement='top' data-content='Vivamus sagittis lacus vel augue laoreet rutrum faucibus.'>").draggable({revert: true, revertDuration: 50, delay: 0}).popover().attr('data-id', GetNewId());
+					
+					var newRoomId = GetNewId();
+					
+					var newRoom = $("<div class='dm-room' data-container='body' data-toggle='popover' data-placement='top' data-content='Vivamus sagittis lacus vel augue laoreet rutrum faucibus.'>").draggable({revert: true, revertDuration: 50, delay: 0}).popover().attr('data-id', newRoomId);
 					var deleteButton = $("<i class='glyphicon glyphicon-remove'>").click(
 						function () {
 							$(this).parent().fadeOut(200, function(){ $(this).remove(); }).popover('disable');
 						}
 					)
 					newRoom.append(deleteButton).append(newRoom.attr('data-id'));
+					
+					window.availableRooms.push(new Room(newRoomId));
+					
 					var domRoom = $("#room-area").append(newRoom);
 				}
 			);
