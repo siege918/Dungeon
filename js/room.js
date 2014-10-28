@@ -5,8 +5,8 @@ function Room(id)
 	this.id = id;
 	this.Tiles = new Array();
 	
-	for (int i = 0; i < ROOMSIZE; i++)
+	for (var i = 0; i < ROOMSIZE; i++)
 	{
-		Tiles[i] = new Array();
+		this.Tiles[i] = new Array();
 	}
 }
