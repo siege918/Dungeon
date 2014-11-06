@@ -1,0 +1,17 @@
+<?xml version="1.0">
+
+<xs:schema>
+
+<xs:element name="room">
+	<xs:complexType>
+		<xs:element name="tile">
+			<xs:complexType>
+				<xs:element name="TileId" type="xs:integer"/>
+				<xs:element name="X" type="xs:integer"/>
+				<xs:element name="Y" type="xs:integer"/>					
+			</xs:complexType>
+		</xs:element>
+	</xs:complexType>
+</xs:element>
+
+</xs:schema>

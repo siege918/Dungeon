@@ -1,0 +1,19 @@
+<?xml version="1.0">
+
+<xs:schema>
+
+<xs:element name="tile">
+	<xs:complexType>
+		<xs:element name="TileId" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+		<xs:element name="ImagePath" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		<xs:element name="IsSolid" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+		<xs:element name="Item" minOccurs="0" maxOccurs="1">
+			<xs:element name="ItemId" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+		</xs:element>
+		<xs:element name="Carryable" minOccurs="0" maxOccurs="1">
+			<xs:element name="CarryableId" minOccurs="1" maxOccurs="1"/>
+		</xs:element>
+	</xs:complexType>
+</xs:element>
+
+</xs:schema>
